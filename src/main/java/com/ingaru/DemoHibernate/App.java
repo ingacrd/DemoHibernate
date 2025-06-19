@@ -22,6 +22,7 @@ import org.hibernate.service.ServiceRegistry;
 	        //Configuration config = new Configuration().configure().addAnnotatedClass(Student.class);
 	        //ServiceRegistry reg = new ServiceRegistryBuilder().applySettings(config.getProperties()).buildServiceRegistry();
 	        config.configure("hibernate.cfg.xml");
+	        
 	        SessionFactory factory = config.buildSessionFactory();
 	        Session session = factory.openSession();
 	        //Transaction tx = session.beginTransaction();
@@ -30,13 +31,20 @@ import org.hibernate.service.ServiceRegistry;
 	        
 	        s= (Student) session.get(Student.class, 101);
 	        System.out.println(s);
-	        s= (Student) session.get(Student.class, 101);
+	        session.getTransaction().commit();
+	        session.close();
+	        
+	        Session session2 = factory.openSession();
+	        session2.beginTransaction();
+	        s = (Student) session2.get(Student.class, 101);
 	        System.out.println(s);
+	        session2.getTransaction().commit();
+	        session2.close();
+	        
 	        
 	        
 	        //tx.commit();
-	        session.getTransaction().commit();
-	        session.close();
+	        
 	        System.out.println("Record Saved Succesfully");
 	        
 	        
