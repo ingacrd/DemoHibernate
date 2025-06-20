@@ -31,35 +31,18 @@ import java.util.HashMap;
 	        SessionFactory factory = config.buildSessionFactory();
 	        Session session = factory.openSession();
 	        session.beginTransaction();
-//	        
+
+//	        Laptop lap = session.get(Laptop.class, 6);
+//	        System.out.println(lap);
 	        
-//	        NativeQuery<Student> query = session.createNativeQuery(
-//	        	    "select * from student where marks > 60", Student.class
-//	        	);
-	        Query<Map<String, Object>> query = session.createNativeQuery(
-	        	    "select sname, marks from student where marks > 60", Object.class
-	        	).unwrap(NativeQuery.class);
-	        query.setTupleTransformer((tuple, aliases) -> {
-	        	     Map<String, Object> map = new HashMap<>();
-	        	     for (int i = 0; i < aliases.length; i++) {
-	        	         map.put(aliases[i], tuple[i]);
-	        	     }
-	        	     return map;
-	        	});
-	        List<Map<String, Object>> results = query.getResultList();
-
-	        for (Map<String, Object> row : results) {
-	            System.out.println(row.get("sname") + " - " + row.get("marks"));
-	        }
-        
-//        for(Student o : students) {
-//        	System.out.println(o);
-//        }
-
+	        Laptop lap = session.load(Laptop.class, 6);
+	        System.out.println(lap);
+	        
 
 	        session.getTransaction().commit();
-	        session.close();
+
+	      
 	        
- 
+	        session.close();
 	    }
 	}
