@@ -8,18 +8,26 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
 @Entity
-@Cacheable
-@Cache(usage=CacheConcurrencyStrategy.READ_ONLY)
+
 public class Student {
 	
 	@Id
 	private int rollno;
 	private String sname;
+	private int marks;
 	
 	public Student() {
 		
 	}
 	
+	public int getMarks() {
+		return marks;
+	}
+
+	public void setMarks(int marks) {
+		this.marks = marks;
+	}
+
 	public Student(int rollno, String sname) {
 		super();
 		this.rollno = rollno;
@@ -40,7 +48,7 @@ public class Student {
 	
 	@Override
 	public String toString() {
-		return "Student [rollno=" + rollno + ", sname=" + sname + "]";
+		return "Student [rollno=" + rollno + ", sname=" + sname + ", marks=" + marks + "]";
 	}
 	
 	
