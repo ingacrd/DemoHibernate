@@ -5,7 +5,7 @@
 import java.util.List;
 import java.util.Random;
 
-
+import org.hibernate.query.NativeQuery;
 import org.hibernate.query.Query;
 
 
@@ -14,11 +14,10 @@ import org.hibernate.Session;
 	import org.hibernate.Transaction;
 	import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
+
+import java.util.Map;
+import java.util.HashMap;
 	
-	/**
-	 * Hello world!
-	 *
-	 */
 	public class App 
 	{
 	    public static void main( String[] args )
@@ -32,36 +31,31 @@ import org.hibernate.service.ServiceRegistry;
 	        SessionFactory factory = config.buildSessionFactory();
 	        Session session = factory.openSession();
 	        session.beginTransaction();
+//	        
 	        
-	        
-	        //HQL
-	        //Query<Student> query = session.createQuery("from Student", Student.class);
-	        //Query<Student> query = session.createQuery("from Student where marks > 50", Student.class);
-	        //Query<Student> query = session.createQuery("from Student where rollno=7", Student.class);
-//	        Query<Object[]> query = session.createQuery("select rollno, sname, marks from Student where rollno=7", Object[].class);
-	        //Query<Object[]> query = session.createQuery("select s.rollno, s.sname, s.marks from Student s where s.rollno = 7", Object[].class);
-	        //Query<Object[]> query = session.createQuery("select rollno, sname, marks from Student", Object[].class);
-	        int b = 60;
-	        //Query<Long> query = session.createQuery("select sum(marks) from Student s where s.marks>60", Long.class);
-	        Query<Long> query = session.createQuery("select sum(marks) from Student s where s.marks>: b", Long.class);
-	        query.setParameter("b", b);
-	        Long marks = (Long) query.uniqueResult();
-	        System.out.println(marks);
-	        //List<Object[]> students = query.getResultList();
-	        //Object[] student = query.uniqueResult();
-	        
-//	        for(Object[] o : students) {
-//	        	System.out.println(o[0] + " " + o[1] + " " + o[2]);
-//	        }
-	        
-	        //Student student = query.uniqueResult();
-	        //System.out.println(student);
-	        //List<Student> students = query.getResultList();
-	        
-	        
-//	        for(Student stu: students) {
-//	        	System.out.println(stu);
-//	        }
+//	        NativeQuery<Student> query = session.createNativeQuery(
+//	        	    "select * from student where marks > 60", Student.class
+//	        	);
+	        Query<Map<String, Object>> query = session.createNativeQuery(
+	        	    "select sname, marks from student where marks > 60", Object.class
+	        	).unwrap(NativeQuery.class);
+	        query.setTupleTransformer((tuple, aliases) -> {
+	        	     Map<String, Object> map = new HashMap<>();
+	        	     for (int i = 0; i < aliases.length; i++) {
+	        	         map.put(aliases[i], tuple[i]);
+	        	     }
+	        	     return map;
+	        	});
+	        List<Map<String, Object>> results = query.getResultList();
+
+	        for (Map<String, Object> row : results) {
+	            System.out.println(row.get("sname") + " - " + row.get("marks"));
+	        }
+        
+//        for(Student o : students) {
+//        	System.out.println(o);
+//        }
+
 
 	        session.getTransaction().commit();
 	        session.close();
