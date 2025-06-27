@@ -1,48 +1,34 @@
 	package com.ingaru.DemoHibernate;
 	
-	import com.ingaru.DemoHibernate.Student;
+	import com.ingaru.DemoHibernate.Alien;
 
-import java.util.List;
-import java.util.Random;
-
-import org.hibernate.query.NativeQuery;
-import org.hibernate.query.Query;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.*;
 
 
-import org.hibernate.Session;
-	import org.hibernate.SessionFactory;
-	import org.hibernate.Transaction;
-	import org.hibernate.cfg.Configuration;
-import org.hibernate.service.ServiceRegistry;
-
-import java.util.Map;
-import java.util.HashMap;
 	
 	public class App 
 	{
 	    public static void main( String[] args )
 	    {
-	    	Student s = null;
-
-	        
-	        Configuration config = new Configuration();
-	        config.configure("hibernate.cfg.xml");
-	        
-	        SessionFactory factory = config.buildSessionFactory();
-	        Session session = factory.openSession();
-	        session.beginTransaction();
-
-//	        Laptop lap = session.get(Laptop.class, 6);
-//	        System.out.println(lap);
-	        
-	        Laptop lap = session.load(Laptop.class, 6);
-	        System.out.println(lap);
-	        
-
-	        session.getTransaction().commit();
-
-	      
-	        
-	        session.close();
+	    	Alien a1= new Alien();
+	    	a1.setAid(1);
+	    	a1.setAname("Maria");
+	    	a1.setTech("Hardward");
+	    	
+	    	EntityManagerFactory emf = Persistence.createEntityManagerFactory("myHibernatePU");
+	    	EntityManager em = emf.createEntityManager();
+	    	
+	    	//save
+	    	em.getTransaction().begin();
+	    	em.persist(a1);
+	    	em.getTransaction().commit();
+	    	
+	    	//fetch
+	    	Alien a = em.find(Alien.class,1);
+	    	System.out.println(a);
+	    	
+	    	
 	    }
 	}
